@@ -1,37 +1,33 @@
-name: CI
-
+name: Build Kernel (Onyx)
 on:
-  push:
-    branches: main
   workflow_dispatch:
 
 jobs:
-  build-kernel:
-    name: Build Kernel for Onyx
+  build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-    - name: Build Kernel
-      uses: dabao1955/kernel_build_action@main
-      with:
+      - name: Build Kernel
+        uses: Tst-repo/tst-kernel-builder@main
+        with:
+          # Официальные исходники
           kernel-url: https://github.com/MiCode/Xiaomi_Kernel_OpenSource
           kernel-branch: onyx-v-oss
           config: onyx_user_defconfig
           arch: arm64
-          # Для ядер 6.x отключаем старый GCC, чтобы не было ошибки 404
-          aosp-gcc: false
-          aosp-clang: true
-          # Root и NetHunter функции
-          ksu: true
+          
+          # Указываем версию Clang напрямую (твоя проверенная r510928)
+          clang-version: r510928
+          
+          # Включаем KernelSU и NetHunter
+          kernelsu: true
           ksu-version: main
           nethunter: true
-          android-version: 15
-          # Версия компилятора из твоего текущего ядра Capybara
-          aosp-clang-version: r510928
-          disable-lto: true
+          
+          # Оптимизации
+          lto: false
+          
+          # На выходе получаем готовый AnyKernel3
           anykernel3: true
