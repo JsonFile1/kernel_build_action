@@ -1,33 +1,30 @@
-name: Build Kernel (Onyx)
+name: Build Kernel Onyx
 on:
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
       - name: Build Kernel
-        uses: Tst-repo/tst-kernel-builder@main
+        uses: u-p-p-e-r/kernel_build_action@main
         with:
-          # Официальные исходники
           kernel-url: https://github.com/MiCode/Xiaomi_Kernel_OpenSource
           kernel-branch: onyx-v-oss
           config: onyx_user_defconfig
           arch: arm64
-          
-          # Указываем версию Clang напрямую (твоя проверенная r510928)
-          clang-version: r510928
-          
-          # Включаем KernelSU и NetHunter
-          kernelsu: true
+          android-version: 15
+          # Твоя проверенная версия компилятора
+          aosp-clang-version: r510928
+          # Отключаем GCC, так как экшен умеет собирать LLVM-only
+          aosp-gcc: false
+          # Включаем всё, что ты просил
+          ksu: true
           ksu-version: main
           nethunter: true
-          
-          # Оптимизации
-          lto: false
-          
-          # На выходе получаем готовый AnyKernel3
           anykernel3: true
