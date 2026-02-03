@@ -19,23 +19,19 @@ jobs:
     - name: Build Kernel
       uses: dabao1955/kernel_build_action@main
       with:
-          # Официальный репозиторий Xiaomi
           kernel-url: https://github.com/MiCode/Xiaomi_Kernel_OpenSource
-          # Ветка для Poco F7 (Onyx) под Android 15/16
+          # Возвращаем твой onyx, раз он определен
           kernel-branch: onyx-v-oss
-          # Конфиг устройства
           config: onyx_user_defconfig
           arch: arm64
-          # Включаем GCC (требуется экшеном для работы Clang)
+          # Включаем GCC (обязательно для этого скрипта)
           aosp-gcc: true
           aosp-clang: true
-          # Включаем Root и инструменты взлома
           ksu: true
           ksu-version: main
           nethunter: true
-          # Настройки под актуальное железо
           android-version: 15
-          aosp-clang-version: r522815
-          # Отключаем тяжелые оптимизации для первой сборки
+          # Ставим версию Clang, на которой нет ошибки 400
+          aosp-clang-version: r530567
           disable-lto: true
           anykernel3: true
