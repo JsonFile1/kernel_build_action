@@ -1,4 +1,5 @@
 name: CI
+
 on:
   push:
     branches: main
@@ -18,20 +19,23 @@ jobs:
     - name: Build Kernel
       uses: dabao1955/kernel_build_action@main
       with:
-          kernel-url: https://github.com/xiaomi-sm8635-devs/android_kernel_xiaomi_onyx
-          kernel-branch: lineage-21
+          # Используем официальные исходники Xiaomi
+          kernel-url: https://github.com/MiCode/Xiaomi_Kernel_OpenSource
+          # Ветка для Poco F7 (Onyx) на базе Android 14/15/16
+          kernel-branch: onyx-v-oss
+          # Официальный конфиг устройства
           config: onyx_user_defconfig
           arch: arm64
-          # Современные ядра 6.x не используют GCC, только Clang
+          # Современные ядра 6.x собираются только через Clang
           aosp-gcc: false
           aosp-clang: true
-          # Включаем KernelSU и NetHunter
+          # Включаем поддержку KernelSU и NetHunter (BadUSB, HID)
           ksu: true
           ksu-version: main
           nethunter: true
-          # Настройки под твой процессор и Android 16
+          # Настройки компилятора под Android 16 и ядро 6.x
           android-version: 15
           aosp-clang-version: r522815
-          # LTO лучше оставить false для первой успешной сборки
+          # Отключаем LTO для ускорения и стабильности первой сборки
           disable-lto: true
           anykernel3: true
