@@ -20,18 +20,19 @@ jobs:
       uses: dabao1955/kernel_build_action@main
       with:
           kernel-url: https://github.com/MiCode/Xiaomi_Kernel_OpenSource
-          # Возвращаем твой onyx, раз он определен
+          # Твоя ветка для Poco F7
           kernel-branch: onyx-v-oss
           config: onyx_user_defconfig
           arch: arm64
-          # Включаем GCC (обязательно для этого скрипта)
+          # GCC необходим как вспомогательный инструмент
           aosp-gcc: true
           aosp-clang: true
+          # Включаем Root и NetHunter (HID/BadUSB)
           ksu: true
           ksu-version: main
           nethunter: true
           android-version: 15
-          # Ставим версию Clang, на которой нет ошибки 400
-          aosp-clang-version: r530567
+          # Используем проверенную версию Clang из твоего примера
+          aosp-clang-version: r510928
           disable-lto: true
           anykernel3: true
