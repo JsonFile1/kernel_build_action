@@ -1,10 +1,15 @@
-kernel_source: https://github.com/MiCode/Xiaomi_Kernel_OpenSource
-kernel_source_branch: onyx-u-oss
-kernel_config: onyx_user_defconfig
-arch: arm64
-compiler: clang
-clang_version: r487747c
-custom_commands: |
-  echo "CONFIG_BT_HCIVHCI=y" >> arch/arm64/configs/onyx_user_defconfig
-  echo "CONFIG_USB_G_HID=y" >> arch/arm64/configs/onyx_user_defconfig
-  echo "CONFIG_USB_CONFIGFS_F_HID=y" >> arch/arm64/configs/onyx_user_defconfig
+    steps:
+      - name: Build
+        uses: dabao1955/kernel_build_action@main
+        with:
+          kernel-url: https://github.com/xiaomi-sm8635-devs/android_kernel_xiaomi_onyx
+          kernel-branch: lineage-21
+          config: onyx_user_defconfig
+          arch: arm64
+          aosp-gcc: false
+          aosp-clang: true
+          android-version: 15
+          aosp-clang-version: r522815
+          ksu: true
+          nethunter: true
+          
