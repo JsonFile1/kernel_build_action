@@ -2,42 +2,36 @@ name: CI
 on:
   push:
     branches: main
-    paths:
-      - '.github/workflows/main.yml'
-      - 'action.yml'
-
-  pull_request:
   workflow_dispatch:
 
 jobs:
-  ci-test:
-    name: Build Kernel
-    strategy:
-      fail-fast: false
+  build-kernel:
+    name: Build Kernel for Onyx
     runs-on: ubuntu-latest
     permissions:
       contents: write
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v6
-      with:
-          repository: ${{ github.event.pull_request.head.repo.full_name }}
-          ref: ${{ github.event.pull_request.head.ref }}
+      uses: actions/checkout@v4
 
     - name: Build Kernel
-      uses: ./
+      uses: dabao1955/kernel_build_action@main
       with:
-          kernel-url: https://github.com/AcmeUI-Devices/android_kernel_xiaomi_cas
-          kernel-dir: msm-4.19
-          kernel-branch: taffy
-          config: cas_defconfig
+          kernel-url: https://github.com/xiaomi-sm8635-devs/android_kernel_xiaomi_onyx
+          kernel-branch: lineage-21
+          config: onyx_user_defconfig
           arch: arm64
-          aosp-gcc: true
+          # Современные ядра 6.x не используют GCC, только Clang
+          aosp-gcc: false
           aosp-clang: true
+          # Включаем KernelSU и NetHunter
           ksu: true
           ksu-version: main
-          android-version: 12
-          aosp-clang-version: r383902
+          nethunter: true
+          # Настройки под твой процессор и Android 16
+          android-version: 15
+          aosp-clang-version: r522815
+          # LTO лучше оставить false для первой успешной сборки
           disable-lto: true
           anykernel3: true
