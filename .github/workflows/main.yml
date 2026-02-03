@@ -10,6 +10,7 @@ jobs:
         uses: jlumbroso/free-disk-space@main
         with:
           tool-cache: true
+          android: true
 
       - name: Checkout
         uses: actions/checkout@v4
@@ -17,33 +18,42 @@ jobs:
       - name: Install Build Essentials
         run: |
           sudo apt-get update
-          sudo apt-get install -y bc build-essential flex bison binfmt-support libssl-dev libelf-dev libncurses-dev git-lfs
+          sudo apt-get install -y bc build-essential flex bison binfmt-support libssl-dev libelf-dev libncurses-dev git-lfs aarch64-linux-gnu-gcc
 
       - name: Download Clang (r510928)
         run: |
+          # Клонируем именно ту ветку и коммит, которые ты указал
+          git clone --depth=1 https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86 -b main clang-repo
           mkdir -p clang
-          curl -L https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/main/clang-r510928.tar.gz -o clang.tar.gz
-          tar -C clang -xzf clang.tar.gz
+          # Перемещаем содержимое нужной папки r510928
+          cp -r clang-repo/clang-r510928/* clang/
+          rm -rf clang-repo
 
       - name: Clone Kernel
         run: |
           git clone --depth=1 https://github.com/MiCode/Xiaomi_Kernel_OpenSource -b onyx-v-oss kernel
           
+      - name: Setup KernelSU Next
+        run: |
+          cd kernel
+          curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -s main
+
       - name: Build Kernel
         run: |
           export PATH=$(pwd)/clang/bin:$PATH
           cd kernel
+          # Сборка с использованием скачанного Clang
           make ARCH=arm64 O=out onyx_user_defconfig
           make ARCH=arm64 O=out \
             CC=clang \
-            CROSS_COMPILE=aarch64-linux-gnu- \
-            CROSS_COMPILE_COMPAT=arm-linux-gnueabi- \
             LLVM=1 \
             LLVM_IAS=1 \
+            CLANG_TRIPLE=aarch64-linux-gnu- \
+            CROSS_COMPILE=aarch64-linux-gnu- \
             -j$(nproc)
 
-      - name: Upload Artifact
+      - name: Upload Kernel Image
         uses: actions/upload-artifact@v4
         with:
-          name: kernel-onyx
+          name: Image-Onyx-KSU
           path: kernel/out/arch/arm64/boot/Image
