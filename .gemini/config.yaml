@@ -1,24 +1,13 @@
-have_fun: false
-ignore_patterns:
-  - "QWEN.md"
-  - "AGENTS.md"
-  - ".github/**"
-  - "LICENSE"
-  - ".yamlint"
-  - ".gemini/**"
-  - "mkdtboimg.py"
-  - "rekernel/*.c"
-  - "rekernel/*.h"
-  - "rekernel/*.zip"
-  - "nethunter/*.patch"
-memory_config:
-  disabled: false
-code_review:
-  disable: false
-  comment_severity_threshold: MEDIUM
-  max_review_comments: 10
-  pull_request_opened:
-    help: false
-    summary: false
-    code_review: true
-    include_drafts: false
+kernel_source: https://github.com/MiCode/Xiaomi_Kernel_OpenSource
+kernel_source_branch: onyx-u-oss
+kernel_config: onyx_user_defconfig
+arch: arm64
+compiler: clang
+clang_version: r487747c
+# Ниже магия для Bluetooth и HID
+custom_commands: |
+  echo "CONFIG_BT_HCIVHCI=y" >> arch/arm64/configs/onyx_user_defconfig
+  echo "CONFIG_USB_G_HID=y" >> arch/arm64/configs/onyx_user_defconfig
+  echo "CONFIG_USB_CONFIGFS_F_HID=y" >> arch/arm64/configs/onyx_user_defconfig
+  echo "CONFIG_USB_F_HID=y" >> arch/arm64/configs/onyx_user_defconfig
+  
