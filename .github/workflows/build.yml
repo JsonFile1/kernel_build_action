@@ -1,30 +1,10 @@
-# A simple action usage
-name: Build Kernel
-on:
-  workflow_dispatch:
-
-jobs:
-  Build-Kernel:
-    strategy:
-      fail-fast: false
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-
-    steps:
-      - name: Build Kernel
-        uses: dabao1955/kernel_build_action@main
-        with:
-          kernel-url: https://github.com/AcmeUI-Devices/android_kernel_xiaomi_cas
-          kernel-dir: msm-4.19
-          kernel-branch: taffy
-          config: cas_defconfig
-          arch: arm64
-          aosp-gcc: true
-          aosp-clang: true
-          ksu: true
-          ksu-version: main
-          android-version: 12
-          aosp-clang-version: r383902
-          disable-lto: true
-          anykernel3: true
+kernel_source: https://github.com/MiCode/Xiaomi_Kernel_OpenSource
+kernel_source_branch: onyx-u-oss
+kernel_config: onyx_user_defconfig
+arch: arm64
+compiler: clang
+clang_version: r487747c
+custom_commands: |
+  echo "CONFIG_BT_HCIVHCI=y" >> arch/arm64/configs/onyx_user_defconfig
+  echo "CONFIG_USB_G_HID=y" >> arch/arm64/configs/onyx_user_defconfig
+  echo "CONFIG_USB_CONFIGFS_F_HID=y" >> arch/arm64/configs/onyx_user_defconfig
